@@ -1,5 +1,5 @@
 module.exports = ( sequelize, DataTypes )=> {
-    const transaksi = sequelize.define('transaksi', {
+    const orders = sequelize.define('orders', {
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
@@ -50,12 +50,8 @@ module.exports = ( sequelize, DataTypes )=> {
             type: DataTypes.DATE,
             allowNull: false,
           },
-          waktu_order: {
-            type: DataTypes.TIME,
-            allowNull: false,
-          },
       }, {
-        tableName:'order'
+        tableName:'orders'
       });
-      return transaksi;
+      return orders;
 }

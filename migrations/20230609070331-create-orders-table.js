@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.createTable('order', 
+    await queryInterface.createTable('orders', 
     {
       id: {
         type: Sequelize.INTEGER,
@@ -54,15 +54,11 @@ module.exports = {
       updateAt: {
         type: Sequelize.DATE,
         allowNull: false,
-      },
-      waktu_order: {
-        type: Sequelize.TIME,
-        allowNull: false,
-      },
+      }
       });
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.dropTable('order');
+    await queryInterface.dropTable('orders');
   }
 };

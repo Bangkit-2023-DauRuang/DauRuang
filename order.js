@@ -5,13 +5,11 @@ router.use(bodyParser.json());
 
 const Validator = require('fastest-validator');
 
-const {transaksi} = require('./models');
+const {orders} = require('./models');
 
 const v = new Validator();
 
-const orders = [];
-
-router.post('/orders', async (req, res) => {
+router.post('/orders', async(req, res) => {
 const schema = {
   username:'string|min: 1',
   jenis_sampah: 'string|min: 1',
@@ -59,7 +57,7 @@ switch (jenis_sampah) {
 }
 
 try {
-  const buatorder = await transaksi.create({
+  const order = await orders.create({
     username,
     jenis_sampah,
     hargaPerKg,
@@ -70,13 +68,12 @@ try {
     catatan
   });
 
-  orderArray.push(buatorder);
-  res.status(201).json(buatorder);
+  res.status(201).json(order);
 } catch (error) {
   console.error(error);
   res.status(500).json({ error: 'Internal server error' });
 }
 
 });
-//Start server
+
 module.exports = router;
