@@ -9,6 +9,8 @@ const {transaksi} = require('./models');
 
 const v = new Validator();
 
+const orders = [];
+
 router.post('/orders', async (req, res) => {
 const schema = {
   username:'string|min: 1',
@@ -27,46 +29,37 @@ if (validate.length){
   .json(validate);
 }
 
-// Calculate reward points
+const { username, jenis_sampah, berat_sampah, lokasi_pengepul, lokasi_user, catatan } = req.body;
+
+// Calculate reward points and hargaPerKg
 let points;
+let hargaPerKg;
+
 switch (jenis_sampah) {
   case 'Minyak jelantah':
     points = 10;
-    break;
-  case 'Kaleng':
-    points = 5;
-    break;
-  case 'Organik':
-    points = 3;
-    break;
-  case 'Paper':
-    points = 2;
-    break;
-  default:
-    points = 0;
-}
-
-let hargaPerKg;
-switch (jenis_sampah) {
-  case 'Minyak jelantah':
     hargaPerKg = 9500;
     break;
   case 'Kaleng':
+    points = 5;
     hargaPerKg = 13000;
     break;
   case 'Paper':
+    points = 2;
     hargaPerKg = 5000;
     break;
   case 'Organik':
+    points = 3;
     hargaPerKg = 3000;
     break;
   default:
+    points = 0;
     hargaPerKg = 0;
+    break;
 }
 
 try {
-  const order = await transaksi.create({
-    id: orders.length + 1,
+  const buatorder = await transaksi.create({
     username,
     jenis_sampah,
     hargaPerKg,
@@ -77,11 +70,13 @@ try {
     catatan
   });
 
-  order.push(order);
-  res.status(201).json(order);
+  orderArray.push(buatorder);
+  res.status(201).json(buatorder);
 } catch (error) {
+  console.error(error);
   res.status(500).json({ error: 'Internal server error' });
 }
+
 });
 //Start server
 module.exports = router;
