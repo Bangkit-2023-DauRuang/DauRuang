@@ -1,5 +1,5 @@
-module.exports = ( sequelize, DataTypes )=> {
-    const orders = sequelize.define('orders', {
+module.exports = ( Sequelize, DataTypes )=> {
+    const orders = Sequelize.define('orders', {
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
@@ -41,17 +41,10 @@ module.exports = ( sequelize, DataTypes )=> {
             type: DataTypes.BOOLEAN,
             allowNull: false,
             defaultValue: false,
-          },
-          createdAt: {
-            type: DataTypes.DATE,
-            allowNull: false,
-          },
-          updateAt: {
-            type: DataTypes.DATE,
-            allowNull: false,
-          },
-      }, {
-        tableName:'orders'
-      });
+          }
+        }, {
+          Sequelize,
+          tableName:'orders'
+        });
       return orders;
 }
