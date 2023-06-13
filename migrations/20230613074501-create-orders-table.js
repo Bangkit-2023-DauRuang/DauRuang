@@ -42,10 +42,13 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true,
       },
-      isPickedUp: {
-        type: Sequelize.BOOLEAN,
+      status_pemesanan: {
+        type: Sequelize.STRING,
         allowNull: false,
-        defaultValue: false,
+        defaultValue: 'Pengecekan',
+        validate: {
+          isIn: [['Pengecekan', 'Diproses', 'Selesai', 'Dibatalkan']],
+        },
       },
       createdAt: {
         type: Sequelize.DATE,

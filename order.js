@@ -15,7 +15,7 @@ router.get('/orders', async (req, res) => {
   
   try {
     const order = await orders.findAll();
-    res.json(order);
+    res.json({message: 'List semua data yang masuk', data:order});
   } 
   catch (error) {
     res.status(500)
@@ -34,7 +34,7 @@ router.get('/orders/:id', async (req, res) => {
       .json({ error: 'Order tidak ditemukan' });
       return;
     }
-    res.json(order);
+    res.json({data:order});
   } catch (error) {
     res.status(500)
     .json({ error: 'Internal server error' });
@@ -52,8 +52,7 @@ router.get('/orders/:id/lacak', async (req, res) => {
       return;
     }
 
-    const status = order.isPickedUp ? 'Proses Pickup' : 'Pending pickup';
-    res.json({ status });
+    res.json({ status: order.status_pemesanan });
   } catch (error) {
     res.status(500).json({ error: 'Internal server error' });
   }
@@ -163,24 +162,100 @@ const { username, jenis_sampah, berat_sampah, lokasi_pengepul, lokasi_user, cata
 
 });
 
-// POST (buat menyelesaikan transaksi orderan) url: http://localhost:3000/order/orders/1/complete
-router.post('/orders/:id/complete', async (req, res) => {
-  const id = parseInt(req.params.id);
+// POST (buat menyelesaikan transaksi orderan sama kasih status orderan "selesai") url: http://localhost:3000/order/orders/1/selesai
+router.post('/orders/:id/selesai', async (req, res) => {
+  const id = req.params.id;
 
   try {
-    const order = await orders.findByPk(id);
+    let order = await orders.findByPk(id);
     if (!order) {
-      res.status(404).json({ error: 'Order tidak ditemukan' });
-      return;
+      return res.status(404).json({ error: 'Order tidak ditemukan' });
     }
 
-    order.isPickedUp = true;
+    if (order.status_pemesanan === 'Selesai') {
+      return res.status(400).json({ error: 'Order telah selesai' });
+    }
+
+    order.status_pemesanan = 'Selesai';
     await order.save();
 
-    res.json({ message: 'Transaksi berhasil! Tunggu yaaa, pengepul sampah kamu lagi di jalan menuju rumahmu', data:order });
+    return res.json({ message: 'Transaksi berhasil! Tunggu yaaa, pengepul sampah kamu lagi di jalan menuju rumahmu', data:order });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+//  POST (buat menyelesaikan transaksi orderan sama kasih status orderan "pengecekan") url: http://localhost:3000/order/orders/:id/pengecekan
+router.post('/orders/:id/pengecekan', async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    let order = await orders.findByPk(id);
+    if (!order) {
+      return res.status(404).json({ error: 'Order tidak ditemukan' });
+    }
+
+    if (order.status_pemesanan === 'Pengecekan') {
+      return res.status(400).json({ error: 'Order telah diperiksa' });
+    }
+
+    order.status_pemesanan = 'Pengecekan';
+    await order.save();
+
+    return res.json({ message: 'Transaksi berhasil! Tunggu yaaa, pesanan kamu sedang dalam tahap pengecekan', data:order });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
+// POST (buat menyelesaikan transaksi orderan sama kasih status orderan "diproses") url: http://localhost:3000/order/orders/:id/diproses
+router.post('/orders/:id/diproses', async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    let order = await orders.findByPk(id);
+    if (!order) {
+      return res.status(404).json({ error: 'Order tidak ditemukan' });
+    }
+
+    if (order.status_pemesanan === 'Diproses') {
+      return res.status(400).json({ error: 'Order telah diproses' });
+    }
+
+    order.status_pemesanan = 'Diproses';
+    await order.save();
+
+    return res.json({ message: 'Transaksi berhasil! Tunggu yaaa, pesanan kamu sedang diproses', data:order });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// POST (buat menyelesaikan transaksi orderan sama kasih status orderan "dibatalkan") url: http://localhost:3000/order/orders/:id/dibatalkan
+router.post('/orders/:id/dibatalkan', async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    let order = await orders.findByPk(id);
+    if (!order) {
+      return res.status(404).json({ error: 'Order tidak ditemukan' });
+    }
+
+    if (order.status_pemesanan === 'Dibatalkan') {
+      return res.status(400).json({ error: 'Order telah dibatalkan' });
+    }
+
+    order.status_pemesanan = 'Dibatalkan';
+    await order.save();
+
+    return res.json({ message: 'Orderan kamu berhasil dibatalkan', data:order });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Internal server error' });
   }
 });
 

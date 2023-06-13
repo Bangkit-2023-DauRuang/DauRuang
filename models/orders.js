@@ -37,11 +37,14 @@ module.exports = ( Sequelize, DataTypes )=> {
             type: DataTypes.STRING,
             allowNull: true,
           },
-          isPickedUp: {
-            type: DataTypes.BOOLEAN,
+          status_pemesanan: {
+            type: DataTypes.STRING,
             allowNull: false,
-            defaultValue: false,
-          }
+            defaultValue: 'Pengecekan',
+            validate: {
+          isIn: [['Pengecekan', 'Diproses', 'Selesai', 'Dibatalkan']],
+        },
+      },
         }, {
           Sequelize,
           tableName:'orders'
