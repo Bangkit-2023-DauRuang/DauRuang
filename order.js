@@ -162,7 +162,7 @@ const { username, jenis_sampah, berat_sampah, lokasi_pengepul, lokasi_user, cata
 
 });
 
-// POST (buat menyelesaikan transaksi orderan sama kasih status orderan "selesai") url: http://localhost:3000/order/orders/1/selesai
+// POST (buat menyelesaikan transaksi orderan sama kasih status orderan "selesai") url: http://localhost:3000/order/orders/1/complete
 router.post('/orders/:id/selesai', async (req, res) => {
   const id = req.params.id;
 
@@ -209,7 +209,6 @@ router.post('/orders/:id/pengecekan', async (req, res) => {
     return res.status(500).json({ error: 'Internal server error' });
   }
 });
-
 
 // POST (buat menyelesaikan transaksi orderan sama kasih status orderan "diproses") url: http://localhost:3000/order/orders/:id/diproses
 router.post('/orders/:id/diproses', async (req, res) => {
@@ -262,38 +261,67 @@ router.post('/orders/:id/dibatalkan', async (req, res) => {
 // PUT (buat update/perbaharuin orderan by id) url: http://localhost:3000/order/orders/1
 router.put('/orders/:id', async (req, res) => {
   const id = parseInt(req.params.id);
-  
+
   const schema = {
-    username:'string|min: 1',
-    jenis_sampah: 'string|min: 1',
+    username: 'string|optional',
+    jenis_sampah: 'string|min:1',
     berat_sampah: 'number|positive',
-    lokasi_pengepul: 'string|min: 1',
-    lokasi_user: 'string|min: 1',
+    lokasi_pengepul: 'string|min:1',
+    lokasi_user: 'string|min:1',
     catatan: 'string|optional'
   }
 
-  // validasi body request
-  const validate = v.validate (req.body, schema);
+  // validate body request
+  const validate = v.validate(req.body, schema);
 
-  if (validate.length){
-    return res.status(400)
-    .json(validate);
+  if (validate.length) {
+    return res.status(400).json(validate);
   }
 
   try {
     let order = await orders.findByPk(id);
     if (!order) {
-      res.status(404)
-      .json({ error: 'Order tidak ditemukan' });
+      res.status(404).json({ error: 'Order tidak ditemukan' });
       return;
     }
 
-    order = await order.update(req.body);
+    // Update order
+    order.username = req.body.username;
+    order.jenis_sampah = req.body.jenis_sampah;
+    order.berat_sampah = req.body.berat_sampah;
+    order.lokasi_pengepul = req.body.lokasi_pengepul;
+    order.lokasi_user = req.body.lokasi_user;
+    order.catatan = req.body.catatan;
 
-    res.json({message: 'Order kamu berhasil diupdate!', data:order});
+    // Update hargaPerKg and points based on jenis_sampah
+    switch (order.jenis_sampah) {
+      case 'Minyak jelantah':
+        order.points = 10;
+        order.hargaPerKg = 9500;
+        break;
+      case 'Kaleng':
+        order.points = 5;
+        order.hargaPerKg = 13000;
+        break;
+      case 'Paper':
+        order.points = 2;
+        order.hargaPerKg = 5000;
+        break;
+      case 'Organik':
+        order.points = 3;
+        order.hargaPerKg = 3000;
+        break;
+      default:
+        order.points = 0;
+        order.hargaPerKg = 0;
+        break;
+    }
+
+    order = await order.save();
+
+    res.json({ message: 'Order kamu berhasil diupdate!', data: order });
   } catch (error) {
-    res.status(500)
-    .json({ error: 'Internal server error' });
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
