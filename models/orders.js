@@ -40,9 +40,9 @@ module.exports = ( Sequelize, DataTypes )=> {
           status_pemesanan: {
             type: DataTypes.STRING,
             allowNull: false,
-            defaultValue: 'Pengecekan',
+            defaultValue: 'Diproses',
             validate: {
-          isIn: [['Pengecekan', 'Diproses', 'Selesai', 'Dibatalkan']],
+          isIn: [['Diproses', 'Pengecekan', 'Selesai', 'Dibatalkan']],
         },
       },
         }, {

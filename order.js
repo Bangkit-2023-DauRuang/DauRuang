@@ -14,7 +14,11 @@ const v = new Validator();
 router.get('/orders', async (req, res) => {
   
   try {
-    const order = await orders.findAll();
+    const order = await orders.findAll({
+      order: [['createdAt', 'DESC'],
+      ['updatedAt', 'DESC'],
+    ],
+    });
     res.json({message: 'List semua data yang masuk', data:order});
   } 
   catch (error) {

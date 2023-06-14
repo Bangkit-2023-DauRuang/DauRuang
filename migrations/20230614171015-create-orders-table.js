@@ -45,9 +45,9 @@ module.exports = {
       status_pemesanan: {
         type: Sequelize.STRING,
         allowNull: false,
-        defaultValue: 'Pengecekan',
+        defaultValue: 'Diproses',
         validate: {
-          isIn: [['Pengecekan', 'Diproses', 'Selesai', 'Dibatalkan']],
+          isIn: [['Diproses', 'Pengecekan', 'Selesai', 'Dibatalkan']],
         },
       },
       createdAt: {
