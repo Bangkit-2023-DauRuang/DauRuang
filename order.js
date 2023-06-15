@@ -45,7 +45,7 @@ router.get('/orders/:id', async (req, res) => {
   }
 });
 
-//GET (buat dapetin orderan by email) url: http://localhost:3000/order/orders/email
+//GET (buat dapetin orderan by email) url: http://localhost:3000/order/orders/email/test123@gmail.com
 router.get('/orders/email/:email', async (req, res) => {
   const email = req.params.email;
 
