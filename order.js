@@ -141,20 +141,20 @@ const { username, email, jenis_sampah, berat_sampah, lokasi_pengepul, lokasi_use
   let hargaPerKg;
 
   switch (jenis_sampah) {
-    case 'Minyak jelantah':
-      points = 10;
+    case 'Minyak':
+      points = 100;
       hargaPerKg = 9500;
       break;
-    case 'Kaleng':
-      points = 5;
+    case 'Logam':
+      points = 150;
       hargaPerKg = 13000;
       break;
-    case 'Paper':
-      points = 2;
+    case 'Kertas':
+      points = 70;
       hargaPerKg = 5000;
       break;
     case 'Organik':
-      points = 3;
+      points = 50;
       hargaPerKg = 3000;
       break;
     default:
@@ -321,20 +321,20 @@ router.put('/orders/:id', async (req, res) => {
 
     // Update hargaPerKg and points based on jenis_sampah
     switch (order.jenis_sampah) {
-      case 'Minyak jelantah':
-        order.points = 10;
+      case 'Minyak':
+        order.points = 100;
         order.hargaPerKg = 9500;
         break;
-      case 'Kaleng':
-        order.points = 5;
+      case 'Logam':
+        order.points = 150;
         order.hargaPerKg = 13000;
         break;
-      case 'Paper':
-        order.points = 2;
+      case 'Kertas':
+        order.points = 70;
         order.hargaPerKg = 5000;
         break;
       case 'Organik':
-        order.points = 3;
+        order.points = 50;
         order.hargaPerKg = 3000;
         break;
       default:
